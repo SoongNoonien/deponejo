@@ -1,0 +1,23 @@
+# Maintainer: Martin Wagner <martin.wagner.dev@gmail.com>
+
+pkgname=dracut-hooks
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="libalpm hooks for booting with dracut"
+url=https://github.com/dracut-ng/dracut-ng
+arch=('any')
+license=('BSD')
+depends=('dracut')
+conflicts=('mkinitcpio')
+source=("60-dracut-remove.hook" "90-dracut-install.hook" "dracut-install" "dracut-remove")
+sha256sums=('df673b9738f46235222fee713dde129f224a9b8efd5c4db533b6b7b29fcb439b'
+            '78fde28e91bdae69d8536b6166b5f0c3238e278ab08faf6f9d2517c7b597d67e'
+            'c7d7e8ba9dbeeee6164acfca2263e39ef547ada51508b6b6bfa13d9fe43cbf1a'
+            'e8dd7be021bb42ae352dcbdc29e63a73bdaf5d1221f77a3b44ac8ffa7841746b')
+
+package() {
+  install -Dm644 "${srcdir}/60-dracut-remove.hook"  "${pkgdir}/usr/share/libalpm/hooks/60-dracut-remove.hook"
+  install -Dm644 "${srcdir}/90-dracut-install.hook" "${pkgdir}/usr/share/libalpm/hooks/90-dracut-install.hook"
+  install -Dm755 "${srcdir}/dracut-install"         "${pkgdir}/usr/share/libalpm/scripts/dracut-install"
+  install -Dm755 "${srcdir}/dracut-remove"          "${pkgdir}/usr/share/libalpm/scripts/dracut-remove"
+}

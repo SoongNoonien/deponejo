@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+update_all_initrds=0
+kernel_directories=()
+
+# install kernels
+while read -r target; do
+	if [[ "$target" == */pkgbase ]]; then
+		kernel_directory="/${target%/pkgbase}"
+		kernel_directories+=("${kernel_directory}")
+		pkgbase="$(<"$target")"
+		kernel_version="${kernel_directory##*/}"
+		echo ":: Installing ${pkgbase} (${kernel_version})"
+		install -Dm644 "${kernel_directory}/vmlinuz" "/boot/vmlinuz-${pkgbase}"
+	else
+		update_all_initrds=1
+	fi
+done
+
+# update initrds
+if (( update_all_initrds )); then
+	kernel_directories=(/usr/lib/modules/*)
+fi
+for kernel_directory in "${kernel_directories[@]}"; do
+	pkgbase="$(<"${kernel_directory}/pkgbase")"
+	kernel_version="${kernel_directory##*/}"
+	echo ":: Building initramfs for ${pkgbase} (${kernel_version})"
+	dracut --hostonly --force "/boot/initramfs-${pkgbase}.img" "$kernel_version"
+	echo ":: Building fallback initramfs for ${pkgbase} (${kernel_version})"
+	dracut --no-hostonly --force "/boot/initramfs-${pkgbase}-fallback.img" "$kernel_version"
+done

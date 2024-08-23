@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+while read -r target; do
+	pkgbase="$(<"/${target}")"
+	echo ":: Removing ${pkgbase}"
+	rm -f "/boot/vmlinuz-${pkgbase}" "/boot/initramfs-${pkgbase}.img" "/boot/initramfs-${pkgbase}-fallback.img"
+done

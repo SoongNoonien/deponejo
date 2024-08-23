@@ -1,0 +1,45 @@
+# Maintainer: Martin Wagner <martin.wagner.dev@gmail.com>
+
+pkgname=zfs
+pkgver=2.2.5
+pkgrel=4
+pkgdesc="OpenZFS on Linux and FreeBSD"
+arch=('x86_64')
+license=('CDDL-1.0')
+url="https://zfsonlinux.org/"
+depends=('libunwind' 'dkms')
+makedepends=('python' 'python-setuptools' 'python-cffi')
+optdepends=("python: arcstat, arc_summary, dbufstat and pyzfs support" "python-cffi: pyzfs support")
+provides=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
+conflicts=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
+backup=('etc/default/zfs' 'etc/zfs/zed.d/zed.rc')
+source=("https://github.com/openzfs/zfs/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz")
+sha256sums=('2388cf6f29cd75e87d6d05e4858a09d419c4f883a658d51ef57796121cd08897')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --sbindir=/usr/bin \
+              --libexecdir=/usr/lib \
+              --sysconfdir=/etc \
+              --localstatedir=/var \
+              --enable-pyzfs \
+              --with-mounthelperdir=/usr/bin \
+              --with-dracutdir=/usr/lib/dracut \
+              --with-udevdir=/usr/lib/udev \
+              --with-config=user
+  make
+}
+
+package() {
+  dkmsdir="${pkgdir}/usr/src"
+  install -d "${dkmsdir}"
+  bsdtar -C "${dkmsdir}" --uid 0 --gid 0 -xf ${pkgname}-${pkgver}.tar.gz
+
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./scripts/dkms.mkconf -n ${pkgname} -v ${pkgver} -f "${dkmsdir}/${pkgname}-${pkgver}/dkms.conf"
+  make DESTDIR="${pkgdir}" install
+
+  chmod 750 "${pkgdir}/etc/sudoers.d"
+  chmod 440 "${pkgdir}/etc/sudoers.d/zfs"
+}

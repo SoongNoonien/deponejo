@@ -1,0 +1,26 @@
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Target = usr/lib/dracut/*
+Target = usr/lib/firmware/*
+Target = usr/src/*/dkms.conf
+
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = systemd
+
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/modules/*/pkgbase
+
+[Action]
+Description = Updating dracut...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/dracut-install
+NeedsTargets
