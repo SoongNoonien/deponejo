@@ -1,7 +1,7 @@
 # Maintainer: Martin Wagner <martin.wagner.dev@gmail.com>
 
 pkgname=zfs
-pkgver=2.4.1
+pkgver=2.4.2
 pkgrel=1
 pkgdesc="OpenZFS on Linux and FreeBSD"
 arch=('x86_64')
@@ -14,7 +14,7 @@ provides=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
 conflicts=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
 backup=('etc/default/zfs' 'etc/zfs/zed.d/zed.rc')
 source=("https://github.com/openzfs/zfs/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz")
-sha256sums=('c17b69770f0023154f578eb8c7536a70f07d6a3bb0bd38f04fa0e8811c3c1390')
+sha256sums=('7e260d0e6af295bea4c5e241cac0a1aef07b58d8dd8035f7898ade3b1bbec78f')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
