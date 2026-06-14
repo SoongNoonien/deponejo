@@ -1,7 +1,7 @@
 # Maintainer: Martin Wagner <martin.wagner.dev@gmail.com>
 
 pkgname=zfs
-pkgver=2.4.2
+pkgver=2.4.3
 pkgrel=1
 pkgdesc="OpenZFS on Linux and FreeBSD"
 arch=('x86_64')
@@ -14,7 +14,7 @@ provides=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
 conflicts=('zfs-utils' 'spl-utils' 'zfs-dkms' 'spl' 'zfs-headers' 'spl-headers')
 backup=('etc/default/zfs' 'etc/zfs/zed.d/zed.rc')
 source=("https://github.com/openzfs/zfs/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz")
-sha256sums=('7e260d0e6af295bea4c5e241cac0a1aef07b58d8dd8035f7898ade3b1bbec78f')
+sha256sums=('1f08f2d154f5189b5f1382848a32667b3d34066145b474c49cd3d41a5fba59a7')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -39,7 +39,4 @@ package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   ./scripts/dkms.mkconf -n ${pkgname} -v ${pkgver} -f "${dkmsdir}/${pkgname}-${pkgver}/dkms.conf"
   make DESTDIR="${pkgdir}" install
-
-  chmod 750 "${pkgdir}/etc/sudoers.d"
-  chmod 440 "${pkgdir}/etc/sudoers.d/zfs"
 }
